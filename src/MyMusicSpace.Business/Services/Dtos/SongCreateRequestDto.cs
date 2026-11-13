@@ -7,7 +7,7 @@
         AlbumCreateRequestDto Album,
         string ProviderId,
         string ProviderUrlTrack,
-        int Duration,
+        long Duration,
         TablatureCreateRequestDto Tablature,
         string? Traslation);
 }
