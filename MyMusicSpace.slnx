@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="src/MyMusicSpace.Api/MyMusicSpace.Api.csproj" />
+  <Project Path="src/MyMusicSpace.Business/MyMusicSpace.Business.csproj" />
+  <Project Path="src/MyMusicSpace.Data/MyMusicSpace.Data.csproj" />
+</Solution>
