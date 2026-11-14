@@ -4,6 +4,6 @@ namespace MyMusicSpace.Business.Services
 {
     public interface ISongService 
     {
-        Task<SongDto> CreateAsync(SongCreateRequestDto request);
+        Task<SongDto> CreateAsync(SongCreateRequestDto request, CancellationToken cancellationToken = default);
     }
 }

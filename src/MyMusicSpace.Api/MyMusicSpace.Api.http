@@ -1,6 +1,26 @@
-@MyMusicSpace.Api_HostAddress = http://localhost:5126
+@MyMusicSpace.Api_HostAddress = http://localhost:6001
 
-GET {{MyMusicSpace.Api_HostAddress}}/weatherforecast/
-Accept: application/json
+POST {{MyMusicSpace.Api_HostAddress}}/api/songs
+Content-Type: application/json
+
+{
+  "name": "Cancion",
+  "lyrics": "letra",
+  "artists": [
+    {
+      "providerId": "artist-1",
+      "name": "Artista"
+    }
+  ],
+  "album": {
+    "providerId": "album-1",
+    "name": "Album",
+    "imageUrl": "https://example.com/album.jpg"
+  },
+  "providerId": "song-1",
+  "providerUrlTrack": "https://example.com/track/1",
+  "duration": 180,
+  "translation": null
+}
 
 ###
