@@ -5,6 +5,6 @@
         public Guid Id { get; set; } 
         public string ProviderId { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
-        public IReadOnlyCollection<ArtistSong> ArtistSongs { get; set; } = [];
+        public ICollection<ArtistSong> ArtistSongs { get; set; } = [];
     }
 }

@@ -8,11 +8,11 @@
         public long Duration { get; set; }
         public string ProviderId { get; set; } = string.Empty;
         public string ProviderUrlTrack { get; set; } = string.Empty;
-        public string? Traslation { get; set; }
-        public Guid TablatureId { get; set; }
-        public Tablature Tablature { get; set; } = new();
-        public IReadOnlyCollection<Album> Albums { get; set; } = [];
-        public IReadOnlyCollection<ArtistSong> ArtistSongs { get; set; } = [];
+        public string? Translation { get; set; }
+        public Tablature? Tablature { get; set; } = null!;
+        public Guid AlbumId { get; set; }
+        public Album Album { get; set; } = null!;
+        public ICollection<ArtistSong> ArtistSongs { get; set; } = [];
 
     }
 }

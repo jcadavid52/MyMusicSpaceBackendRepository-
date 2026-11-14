@@ -4,7 +4,7 @@
     {
         public Guid ArtistId { get; set; }
         public Guid SongId { get; set; }
-        public Song Song { get; set; } = new();
-        public Artist Artist { get; set; } = new();
+        public Song Song { get; set; } = null!;
+        public Artist Artist { get; set; } = null!;
     }
 }
