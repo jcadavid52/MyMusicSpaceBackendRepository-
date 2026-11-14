@@ -6,9 +6,9 @@
         string ProviderUrlTrack,
         string Name,
         string Lyrics,
-        string? Traslation,
-        string Duration,
+        string? Translation,
+        long Duration,
         IEnumerable<ArtistDto> Artists,
         AlbumDto Album,
-        TablatureDto Tablature);
+        TablatureDto? Tablature);
 }

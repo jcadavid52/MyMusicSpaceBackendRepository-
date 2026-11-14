@@ -8,6 +8,11 @@
 
 	<ItemGroup>
 		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="11.0.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\MyMusicSpace.Data\MyMusicSpace.Data.csproj" />
 	</ItemGroup>
 </Project>
 
