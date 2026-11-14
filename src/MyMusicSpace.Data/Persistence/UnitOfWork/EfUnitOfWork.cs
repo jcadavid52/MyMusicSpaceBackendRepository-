@@ -34,5 +34,7 @@ namespace MyMusicSpace.Data.Persistence.UnitOfWork
                     ex);
             }
         }
+
+        public void ClearChanges() => _context.ChangeTracker.Clear();
     }
 }

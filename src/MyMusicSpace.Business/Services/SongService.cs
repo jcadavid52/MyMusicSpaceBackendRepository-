@@ -1,4 +1,5 @@
-﻿using MyMusicSpace.Business.Exceptions;
+﻿using Microsoft.Extensions.Logging;
+using MyMusicSpace.Business.Exceptions;
 using MyMusicSpace.Business.Mappers;
 using MyMusicSpace.Business.Services.Dtos;
 using MyMusicSpace.Data.Exceptions;
@@ -12,27 +13,67 @@ namespace MyMusicSpace.Business.Services
     public class SongService : ISongService
     {
         private const string UserName = "UserTest";
+        private const int MaxAttempts = 3;
 
         private readonly ISongRepository _songRepository;
         private readonly IAlbumRepository _albumRepository;
         private readonly IArtistRepository _artistRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger<SongService> _logger;
 
         public SongService(
             ISongRepository songRepository,
             IAlbumRepository albumRepository,
             IArtistRepository artistRepository,
-            IUnitOfWork unitOfWork)
+            IUnitOfWork unitOfWork,
+            ILogger<SongService> logger)
         {
             _songRepository = songRepository;
             _albumRepository = albumRepository;
             _artistRepository = artistRepository;
             _unitOfWork = unitOfWork;
+            _logger = logger;
         }
 
         public async Task<SongDto> CreateAsync(
             SongCreateRequestDto request,
             CancellationToken cancellationToken = default)
+        {
+            for (var attempt = 1; ; attempt++)
+            {
+                try
+                {
+                    return await CreateCoreAsync(request, cancellationToken);
+                }
+                catch (UniqueConstraintViolationException ex)
+                    when (attempt < MaxAttempts && IsSharedCatalogConflict(ex))
+                {
+                    // Otro request insertó el mismo Album/Artist entre el SELECT y el INSERT.
+                    // El SaveChanges completo hizo rollback, pero el tracker conserva las
+                    // entidades como Added: hay que limpiarlo antes de reconstruir el grafo.
+                    // En el siguiente intento el SELECT ya encuentra la fila del ganador.
+                    _logger.LogWarning(
+                        "Conflicto de concurrencia en {Constraint} al crear la canción {ProviderId}. "
+                        + "Reintento {Attempt}/{MaxAttempts}.",
+                        ex.ConstraintName,
+                        request.ProviderId,
+                        attempt,
+                        MaxAttempts);
+
+                    _unitOfWork.ClearChanges();
+                }
+            }
+        }
+
+        // Solo Album y Artist pueden perder una carrera: son catálogos compartidos que
+        // deduplicamos por (UserName, ProviderId). El índice de Songs no se reintenta
+        // porque ahí el duplicado es real y se traduce a SongAlreadyExistsException.
+        private static bool IsSharedCatalogConflict(UniqueConstraintViolationException exception) =>
+            exception.ConstraintName is UniqueIndexes.AlbumUserProvider or UniqueIndexes.ArtistUserProvider;
+
+        private async Task<SongDto> CreateCoreAsync(
+            SongCreateRequestDto request,
+            CancellationToken cancellationToken)
         {
             if (await _songRepository.ExistsAsync(UserName, request.ProviderId, cancellationToken))
             {
