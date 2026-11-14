@@ -11,4 +11,13 @@
     <PackageReference Include="Scalar.AspNetCore" Version="2.21.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MyMusicSpace.Business\MyMusicSpace.Business.csproj" />
+    <ProjectReference Include="..\MyMusicSpace.Data\MyMusicSpace.Data.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
 </Project>
