@@ -33,7 +33,7 @@ namespace MyMusicSpace.Data.Persistence.SqlServer.HostedServices
             }
 
             await using var scope = _scopeFactory.CreateAsyncScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<SongSqlServerDbContext>();
+            var dbContext = scope.ServiceProvider.GetRequiredService<SpaceMusicSqlServerDbContext>();
 
             _logger.LogInformation("Applying database migrations...");
             await dbContext.Database.MigrateAsync(cancellationToken);
