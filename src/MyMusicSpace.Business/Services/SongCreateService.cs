@@ -1,16 +1,16 @@
 ﻿using Microsoft.Extensions.Logging;
 using MyMusicSpace.Business.Exceptions;
 using MyMusicSpace.Business.Mappers;
+using MyMusicSpace.Business.Services.Abstractions;
 using MyMusicSpace.Business.Services.Dtos;
 using MyMusicSpace.Data.Exceptions;
-using MyMusicSpace.Data.Models;
+using MyMusicSpace.Data.Persistence.Abstractions;
+using MyMusicSpace.Data.Persistence.Models;
 using MyMusicSpace.Data.Persistence.SqlServer.EfCoreConfigurations;
-using MyMusicSpace.Data.Persistence.UnitOfWork;
-using MyMusicSpace.Data.Repositories;
 
 namespace MyMusicSpace.Business.Services
 {
-    public class SongService : ISongService
+    public class SongCreateService : ISongCreateService
     {
         private const string UserName = "UserTest";
         private const int MaxAttempts = 3;
@@ -19,14 +19,14 @@ namespace MyMusicSpace.Business.Services
         private readonly IAlbumRepository _albumRepository;
         private readonly IArtistRepository _artistRepository;
         private readonly IUnitOfWork _unitOfWork;
-        private readonly ILogger<SongService> _logger;
+        private readonly ILogger<SongCreateService> _logger;
 
-        public SongService(
+        public SongCreateService(
             ISongRepository songRepository,
             IAlbumRepository albumRepository,
             IArtistRepository artistRepository,
             IUnitOfWork unitOfWork,
-            ILogger<SongService> logger)
+            ILogger<SongCreateService> logger)
         {
             _songRepository = songRepository;
             _albumRepository = albumRepository;
@@ -35,7 +35,7 @@ namespace MyMusicSpace.Business.Services
             _logger = logger;
         }
 
-        public async Task<SongDto> CreateAsync(
+        public async Task<SongDto> ExecuteAsync(
             SongCreateRequestDto request,
             CancellationToken cancellationToken = default)
         {
@@ -126,7 +126,7 @@ namespace MyMusicSpace.Business.Services
                 return existing;
             }
 
-            return _albumRepository.Create(AlbumMapper.toAlbum(request, UserName));
+            return _albumRepository.Create(AlbumMapper.ToAlbum(request, UserName));
         }
 
         private async Task<IReadOnlyList<Artist>> GetOrCreateArtistsAsync(
@@ -163,7 +163,7 @@ namespace MyMusicSpace.Business.Services
                     continue;
                 }
 
-                var created = _artistRepository.Create(ArtistMapper.toArtist(request, UserName));
+                var created = _artistRepository.Create(ArtistMapper.ToArtist(request, UserName));
                 artistsByProviderId[created.ProviderId] = created;
                 artists.Add(created);
             }

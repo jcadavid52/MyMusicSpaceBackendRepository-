@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using MyMusicSpace.Business.Services;
+using MyMusicSpace.Business.Services.Abstractions;
 
 namespace MyMusicSpace.Business
 {
@@ -9,7 +10,7 @@ namespace MyMusicSpace.Business
         {
             ArgumentNullException.ThrowIfNull(services);
 
-            services.AddScoped<ISongService, SongService>();
+            services.AddScoped<ISongCreateService, SongCreateService>();
 
             return services;
         }

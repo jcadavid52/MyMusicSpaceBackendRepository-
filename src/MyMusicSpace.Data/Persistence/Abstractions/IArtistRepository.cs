@@ -1,6 +1,6 @@
-﻿using MyMusicSpace.Data.Models;
+﻿using MyMusicSpace.Data.Persistence.Models;
 
-namespace MyMusicSpace.Data.Repositories
+namespace MyMusicSpace.Data.Persistence.Abstractions
 {
     public interface IArtistRepository : IRepository<Artist>
     {

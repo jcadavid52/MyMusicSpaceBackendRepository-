@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MyMusicSpace.Data.Models;
-using MyMusicSpace.Data.Persistence.SqlServer;
+using MyMusicSpace.Data.Persistence.Abstractions;
+using MyMusicSpace.Data.Persistence.Models;
 
-namespace MyMusicSpace.Data.Repositories
+namespace MyMusicSpace.Data.Persistence.SqlServer.Repositories
 {
     public class SongSqlServerRepository : ISongRepository
     {

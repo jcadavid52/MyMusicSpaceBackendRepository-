@@ -1,11 +1,11 @@
 ﻿using MyMusicSpace.Business.Services.Dtos;
-using MyMusicSpace.Data.Models;
+using MyMusicSpace.Data.Persistence.Models;
 
 namespace MyMusicSpace.Business.Mappers
 {
     public static class AlbumMapper
     {
-        public static Album toAlbum(AlbumCreateRequestDto request, string userName)
+        public static Album ToAlbum(AlbumCreateRequestDto request, string userName)
         {
             var album = new Album
             {

@@ -11,4 +11,4 @@ namespace MyMusicSpace.Business.Services.Dtos
         [Required, StringLength(500, MinimumLength = 1)] string ProviderUrlTrack,
         [Range(typeof(long), "1", "9223372036854775807")] long Duration,
         string? Translation);
-    }
+}

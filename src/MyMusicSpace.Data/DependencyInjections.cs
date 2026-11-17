@@ -1,11 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService;
 using MyMusicSpace.Data.Persistence;
+using MyMusicSpace.Data.Persistence.Abstractions;
 using MyMusicSpace.Data.Persistence.SqlServer;
 using MyMusicSpace.Data.Persistence.SqlServer.HostedServices;
-using MyMusicSpace.Data.Persistence.UnitOfWork;
-using MyMusicSpace.Data.Repositories;
+using MyMusicSpace.Data.Persistence.SqlServer.Repositories;
 
 namespace MyMusicSpace.Data
 {
@@ -18,21 +19,24 @@ namespace MyMusicSpace.Data
             ArgumentNullException.ThrowIfNull(services);
             ArgumentNullException.ThrowIfNull(configuration);
 
-            AddDatabaseOptions(services, configuration);
+            AddOptions(services, configuration);
             AddSqlServerDatabase(services);
             AddRepositories(services);
             AddPersistenceHostedServices(services);
-            AddUnitOfWork(services);
 
             return services;
         }
 
-        private static void AddDatabaseOptions(
+        private static void AddOptions(
             IServiceCollection services,
             IConfiguration configuration)
         {
             services.AddOptions<DatabaseOptions>()
                 .Bind(configuration.GetSection(DatabaseOptions.SectionName))
+                .ValidateOnStart();
+
+            services.AddOptions<ProviderMusicOptions>()
+                .Bind(configuration.GetSection(ProviderMusicOptions.SectionName))
                 .ValidateOnStart();
         }
 
@@ -56,6 +60,7 @@ namespace MyMusicSpace.Data
                     sqlServer.MigrationsAssembly(typeof(SpaceMusicSqlServerDbContext).Assembly.FullName);
                 });
             });
+            services.AddScoped<IUnitOfWork, SqlServerUnitOfWork>();
         }
 
         private static void AddRepositories(IServiceCollection services)
@@ -68,11 +73,6 @@ namespace MyMusicSpace.Data
         private static void AddPersistenceHostedServices(IServiceCollection services)
         {
             services.AddHostedService<AutomaticMigrationsHostedService>();
-        }
-
-        private static void AddUnitOfWork(IServiceCollection services)
-        {
-            services.AddScoped<IUnitOfWork, EfUnitOfWork>();
         }
     }
 }

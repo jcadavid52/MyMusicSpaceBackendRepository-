@@ -1,5 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using MyMusicSpace.Business.Services;
+using MyMusicSpace.Business.Services.Abstractions;
 using MyMusicSpace.Business.Services.Dtos;
 
 namespace MyMusicSpace.Api.Controllers
@@ -8,9 +8,9 @@ namespace MyMusicSpace.Api.Controllers
     [Route("api/songs")]
     public sealed class SongsController : ControllerBase
     {
-        private readonly ISongService _songService;
+        private readonly ISongCreateService _songService;
 
-        public SongsController(ISongService songService) => _songService = songService;
+        public SongsController(ISongCreateService songService) => _songService = songService;
 
         [HttpPost]
         [ProducesResponseType(typeof(SongDto), StatusCodes.Status201Created)]
@@ -21,7 +21,7 @@ namespace MyMusicSpace.Api.Controllers
             [FromBody] SongCreateRequestDto request,
             CancellationToken cancellationToken)
         {
-            var song = await _songService.CreateAsync(request, cancellationToken);
+            var song = await _songService.ExecuteAsync(request, cancellationToken);
 
             return Created($"/api/songs/{song.Id}", song);
         }

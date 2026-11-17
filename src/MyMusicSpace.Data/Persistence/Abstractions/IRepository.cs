@@ -1,6 +1,4 @@
-﻿using MyMusicSpace.Data.Models;
-
-namespace MyMusicSpace.Data.Repositories
+﻿namespace MyMusicSpace.Data.Persistence.Abstractions
 {
     public interface IRepository<TEntity> where TEntity : class
     {

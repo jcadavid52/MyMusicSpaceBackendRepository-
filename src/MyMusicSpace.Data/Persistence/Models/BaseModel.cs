@@ -1,4 +1,4 @@
-﻿namespace MyMusicSpace.Data.Models
+﻿namespace MyMusicSpace.Data.Persistence.Models
 {
     public abstract class BaseModel
     {

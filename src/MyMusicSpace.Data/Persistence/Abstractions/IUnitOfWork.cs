@@ -1,4 +1,4 @@
-﻿namespace MyMusicSpace.Data.Persistence.UnitOfWork
+﻿namespace MyMusicSpace.Data.Persistence.Abstractions
 {
     public interface IUnitOfWork
     {

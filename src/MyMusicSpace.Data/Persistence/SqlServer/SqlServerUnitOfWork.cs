@@ -1,12 +1,12 @@
-﻿using System.Text.RegularExpressions;
-using Microsoft.Data.SqlClient;
+﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using MyMusicSpace.Data.Exceptions;
-using MyMusicSpace.Data.Persistence.SqlServer;
+using MyMusicSpace.Data.Persistence.Abstractions;
+using System.Text.RegularExpressions;
 
-namespace MyMusicSpace.Data.Persistence.UnitOfWork
+namespace MyMusicSpace.Data.Persistence.SqlServer
 {
-    public sealed class EfUnitOfWork : IUnitOfWork
+    public sealed class SqlServerUnitOfWork : IUnitOfWork
     {
         // SQL Server incluye el nombre del índice en el mensaje: "... with unique index 'IX_...'".
         // El prefijo del índice no depende del idioma del servidor.
@@ -16,7 +16,7 @@ namespace MyMusicSpace.Data.Persistence.UnitOfWork
 
         private readonly SpaceMusicSqlServerDbContext _context;
 
-        public EfUnitOfWork(SpaceMusicSqlServerDbContext context) => _context = context;
+        public SqlServerUnitOfWork(SpaceMusicSqlServerDbContext context) => _context = context;
 
         public async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {

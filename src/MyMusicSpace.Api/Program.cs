@@ -1,6 +1,10 @@
+using Microsoft.Extensions.Options;
 using MyMusicSpace.Api.ExceptionHandling;
 using MyMusicSpace.Business;
 using MyMusicSpace.Data;
+using MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService;
+using MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Abstractions;
+using MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Spotify;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +19,18 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddDataServices(builder.Configuration);
 builder.Services.AddBusinessServices();
+
+builder.Services.AddHttpClient<IProviderMusicSearchService, SpotifySearchService>((sp,client) =>
+{
+    var providerMusicOptions = sp.GetRequiredService<IOptions<ProviderMusicOptions>>().Value;
+    client.BaseAddress = new Uri(providerMusicOptions.Spotify.ApiUrl);
+});
+
+builder.Services.AddHttpClient<IProviderMusicGetAccessTokenService, SpotifyGetAccessTokenService>((sp,client) =>
+{
+    var providerMusicOptions = sp.GetRequiredService<IOptions<ProviderMusicOptions>>().Value;
+    client.BaseAddress = new Uri(providerMusicOptions.Spotify.AuthUrl);
+});
 
 var app = builder.Build();
 
