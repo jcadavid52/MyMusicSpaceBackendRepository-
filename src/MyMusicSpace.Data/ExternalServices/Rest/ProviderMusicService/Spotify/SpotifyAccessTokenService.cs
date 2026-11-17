@@ -53,7 +53,10 @@ namespace MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Spotify
             if (!response.IsSuccessStatusCode)
             {
                 throw new ProviderMusicAuthenticationException(
-                    $"Spotify token request failed with status code {(int)response.StatusCode}.");
+                    await SpotifyErrorReader.BuildMessageAsync(
+                        response,
+                        "Spotify token request failed.",
+                        cancellationToken));
             }
 
             var token = await response.Content

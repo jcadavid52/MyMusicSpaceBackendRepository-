@@ -46,7 +46,10 @@ namespace MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Spotify
             if (!response.IsSuccessStatusCode)
             {
                 throw new ProviderMusicException(
-                    $"Spotify track request failed with status code {(int)response.StatusCode}.");
+                    await SpotifyErrorReader.BuildMessageAsync(
+                        response,
+                        "Spotify track request failed.",
+                        cancellationToken));
             }
 
             var track = await response.Content

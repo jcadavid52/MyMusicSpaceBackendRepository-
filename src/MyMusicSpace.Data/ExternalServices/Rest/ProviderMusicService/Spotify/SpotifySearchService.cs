@@ -11,8 +11,8 @@ namespace MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Spotify
     public class SpotifySearchService : IProviderMusicSearchService
     {
         private const string SearchPath = "v1/search";
-        private const int DefaultLimit = 20;
-        private const int MaxLimit = 50;
+        private const int DefaultLimit = 10;
+        private const int MaxLimit = 10;
 
         private readonly IProviderMusicAccessTokenService _accessTokenService;
         private readonly HttpClient _httpClient;
@@ -45,7 +45,10 @@ namespace MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Spotify
             if (!response.IsSuccessStatusCode)
             {
                 throw new ProviderMusicException(
-                    $"Spotify search failed with status code {(int)response.StatusCode}.");
+                    await SpotifyErrorReader.BuildMessageAsync(
+                        response,
+                        "Spotify search failed.",
+                        cancellationToken));
             }
 
             var searchResponse = await response.Content
