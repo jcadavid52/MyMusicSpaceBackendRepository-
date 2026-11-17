@@ -29,7 +29,7 @@ builder.Services.AddHttpClient<IProviderMusicSearchService, SpotifySearchService
 builder.Services.AddHttpClient<IProviderMusicGetAccessTokenService, SpotifyGetAccessTokenService>((sp,client) =>
 {
     var providerMusicOptions = sp.GetRequiredService<IOptions<ProviderMusicOptions>>().Value;
-    client.BaseAddress = new Uri(providerMusicOptions.Spotify.AuthUrl);
+    client.BaseAddress = new Uri(providerMusicOptions.Spotify.TokenUrl);
 });
 
 var app = builder.Build();

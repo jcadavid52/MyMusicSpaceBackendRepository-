@@ -37,6 +37,15 @@ namespace MyMusicSpace.Data
 
             services.AddOptions<ProviderMusicOptions>()
                 .Bind(configuration.GetSection(ProviderMusicOptions.SectionName))
+                .Validate(
+                    options => !string.IsNullOrWhiteSpace(options.Spotify?.TokenUrl),
+                    $"{ProviderMusicOptions.SectionName}:Spotify:TokenUrl is required.")
+                .Validate(
+                    options => !string.IsNullOrWhiteSpace(options.Spotify?.ClientId),
+                    $"{ProviderMusicOptions.SectionName}:Spotify:ClientId is required.")
+                .Validate(
+                    options => !string.IsNullOrWhiteSpace(options.Spotify?.ClientSecret),
+                    $"{ProviderMusicOptions.SectionName}:Spotify:ClientSecret is required.")
                 .ValidateOnStart();
         }
 

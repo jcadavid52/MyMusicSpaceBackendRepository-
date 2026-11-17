@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using MyMusicSpace.Business.Exceptions;
 using MyMusicSpace.Data.Exceptions;
+using MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Exceptions;
 
 namespace MyMusicSpace.Api.ExceptionHandling
 {
@@ -37,6 +38,16 @@ namespace MyMusicSpace.Api.ExceptionHandling
                     => (StatusCodes.Status409Conflict,
                         "Concurrent modification",
                         "Another request modified the same data. Try again."),
+
+                ProviderMusicAuthenticationException
+                    => (StatusCodes.Status502BadGateway,
+                        "Music provider authentication failed",
+                        "Could not authenticate with the music provider."),
+
+                ProviderMusicException
+                    => (StatusCodes.Status502BadGateway,
+                        "Music provider error",
+                        "The music provider could not complete the request."),
 
                 _ => (StatusCodes.Status500InternalServerError,
                         "Internal server error",

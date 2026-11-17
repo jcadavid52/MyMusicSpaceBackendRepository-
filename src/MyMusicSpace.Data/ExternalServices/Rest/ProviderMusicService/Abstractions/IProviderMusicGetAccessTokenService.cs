@@ -2,6 +2,6 @@
 {
     public interface IProviderMusicGetAccessTokenService
     {
-        Task<string> ExecuteAsync();
+        Task<string> ExecuteAsync(CancellationToken cancellationToken = default);
     }
 }
