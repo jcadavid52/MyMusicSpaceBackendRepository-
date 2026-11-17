@@ -11,22 +11,22 @@ namespace MyMusicSpace.Api.Controllers
     public sealed class SongsController : ControllerBase
     {
         private readonly ISongCreateService _songService;
-        private readonly ISongSearchService _songSearchService;
+        private readonly IProviderMusicSearchService _songSearchService;
 
         public SongsController(
             ISongCreateService songService,
-            ISongSearchService songSearchService)
+            IProviderMusicSearchService songSearchService)
         {
             _songService = songService;
             _songSearchService = songSearchService;
         }
 
-        [HttpGet("search")]
-        [ProducesResponseType(typeof(SongSearchResponseDto), StatusCodes.Status200OK)]
+        [HttpGet("search-provider")]
+        [ProducesResponseType(typeof(SongProviderSearchResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status502BadGateway)]
-        public async Task<ActionResult<SongSearchResponseDto>> Search(
-            [FromQuery] SongSearchQueryDto query,
+        public async Task<ActionResult<SongProviderSearchResponseDto>> Search(
+            [FromQuery] SongProviderSearchQueryDto query,
             CancellationToken cancellationToken)
         {
             var results = await _songSearchService.ExecuteAsync(query, cancellationToken);

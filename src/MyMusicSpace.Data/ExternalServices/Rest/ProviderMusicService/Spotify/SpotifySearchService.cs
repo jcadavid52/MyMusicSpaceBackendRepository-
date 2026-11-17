@@ -8,7 +8,7 @@ using MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Spotify.Dtos;
 
 namespace MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Spotify
 {
-    public class SpotifySearchService : ISongSearchService
+    public class SpotifySearchService : IProviderMusicSearchService
     {
         private const string SearchPath = "v1/search";
         private const int DefaultLimit = 20;
@@ -25,8 +25,8 @@ namespace MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Spotify
             _httpClient = httpClient;
         }
 
-        public async Task<SongSearchResponseDto> ExecuteAsync(
-            SongSearchQueryDto query,
+        public async Task<SongProviderSearchResponseDto> ExecuteAsync(
+            SongProviderSearchQueryDto query,
             CancellationToken cancellationToken = default)
         {
             ArgumentNullException.ThrowIfNull(query);
@@ -61,21 +61,21 @@ namespace MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Spotify
                 .Select(MapTrack)
                 .ToArray();
 
-            return new SongSearchResponseDto(tracks, searchResponse.Tracks.Total);
+            return new SongProviderSearchResponseDto(tracks, searchResponse.Tracks.Total);
         }
 
-        private static SongSearchResultDto MapTrack(SpotifyTrackDto track) =>
+        private static SongProviderSearchResultDto MapTrack(SpotifyTrackDto track) =>
             new(
                 track.Id,
                 track.Name,
                 track.ExternalUrls.Spotify,
                 track.DurationMs,
-                new AlbumSearchResultDto(
+                new AlbumProviderSearchResultDto(
                     track.Album.Id,
                     track.Album.Name,
                     track.Album.Images?.FirstOrDefault()?.Url),
                 track.Artists
-                    .Select(artist => new ArtistSearchResultDto(artist.Id, artist.Name))
+                    .Select(artist => new ArtistProviderSearchResultDto(artist.Id, artist.Name))
                     .ToArray());
     }
 }
