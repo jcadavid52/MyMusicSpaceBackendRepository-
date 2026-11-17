@@ -1,6 +1,7 @@
-﻿using System.Net.Http.Headers;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Abstractions;
 using MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Exceptions;
@@ -11,20 +12,31 @@ namespace MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Spotify
     public class SpotifyGetAccessTokenService : IProviderMusicGetAccessTokenService
     {
         private const string GrantType = "client_credentials";
+        private const string AccessTokenCacheKey = "ProviderMusic:Spotify:AccessToken";
+        private const int CacheExpirationBufferSeconds = 60;
 
         private readonly ProviderMusicOptions _options;
         private readonly HttpClient _httpClient;
+        private readonly IMemoryCache _cache;
 
         public SpotifyGetAccessTokenService(
             IOptions<ProviderMusicOptions> options,
-            HttpClient httpClient)
+            HttpClient httpClient,
+            IMemoryCache cache)
         {
             _options = options.Value;
             _httpClient = httpClient;
+            _cache = cache;
         }
 
         public async Task<string> ExecuteAsync(CancellationToken cancellationToken = default)
         {
+            if (_cache.TryGetValue<string>(AccessTokenCacheKey, out var cachedToken)
+                && !string.IsNullOrWhiteSpace(cachedToken))
+            {
+                return cachedToken;
+            }
+
             var spotify = _options.Spotify;
             var credentials = Convert.ToBase64String(
                 Encoding.UTF8.GetBytes($"{spotify.ClientId}:{spotify.ClientSecret}"));
@@ -52,6 +64,11 @@ namespace MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Spotify
                 throw new ProviderMusicAuthenticationException(
                     "Spotify token response did not contain an access token.");
             }
+
+            var expiration = TimeSpan.FromSeconds(
+                Math.Max(1, token.ExpiresIn - CacheExpirationBufferSeconds));
+
+            _cache.Set(AccessTokenCacheKey, token.AccessToken, expiration);
 
             return token.AccessToken;
         }

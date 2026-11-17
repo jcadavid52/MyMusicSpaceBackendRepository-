@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService;
@@ -20,6 +21,7 @@ namespace MyMusicSpace.Data
             ArgumentNullException.ThrowIfNull(configuration);
 
             AddOptions(services, configuration);
+            services.AddMemoryCache();
             AddSqlServerDatabase(services);
             AddRepositories(services);
             AddPersistenceHostedServices(services);
