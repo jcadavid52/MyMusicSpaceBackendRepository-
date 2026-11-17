@@ -32,7 +32,7 @@ namespace MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Spotify
             ArgumentNullException.ThrowIfNull(query);
             ArgumentException.ThrowIfNullOrWhiteSpace(query.Search);
 
-            var limit = query.Limit <= 0 ? DefaultLimit : Math.Min(query.Limit ?? 10, MaxLimit);
+            var limit = query.Limit <= 0 ? DefaultLimit : Math.Min(query.Limit, MaxLimit);
             var requestUri = $"{SearchPath}?q={Uri.EscapeDataString(query.Search)}&type=track&limit={limit}";
 
             var accessToken = await _accessTokenService.ExecuteAsync(cancellationToken);
