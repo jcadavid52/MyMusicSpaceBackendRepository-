@@ -11,6 +11,7 @@ namespace MyMusicSpace.Business
             ArgumentNullException.ThrowIfNull(services);
 
             services.AddScoped<ISongCreateService, SongCreateService>();
+            services.AddScoped<ISongSearchService, SongSearchService>();
 
             return services;
         }
