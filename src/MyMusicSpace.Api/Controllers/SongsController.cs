@@ -12,26 +12,43 @@ namespace MyMusicSpace.Api.Controllers
     {
         private readonly ISongCreateService _songService;
         private readonly IProviderMusicSearchService _songSearchService;
+        private readonly IProviderMusicGetByIdService _songGetByIdService;
 
         public SongsController(
             ISongCreateService songService,
-            IProviderMusicSearchService songSearchService)
+            IProviderMusicSearchService songSearchService,
+            IProviderMusicGetByIdService songGetByIdService)
         {
             _songService = songService;
             _songSearchService = songSearchService;
+            _songGetByIdService = songGetByIdService;
         }
 
-        [HttpGet("search-provider")]
+        [HttpGet("provider/search")]
         [ProducesResponseType(typeof(SongProviderSearchResponseDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status502BadGateway)]
-        public async Task<ActionResult<SongProviderSearchResponseDto>> Search(
+        public async Task<ActionResult<SongProviderSearchResponseDto>> SearchProvider(
             [FromQuery] SongProviderSearchQueryDto query,
             CancellationToken cancellationToken)
         {
             var results = await _songSearchService.ExecuteAsync(query, cancellationToken);
 
             return Ok(results);
+        }
+
+        [HttpGet("provider/{providerId}")]
+        [ProducesResponseType(typeof(SongProviderDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status502BadGateway)]
+        public async Task<ActionResult<SongProviderDto>> GetByProviderId(
+            string providerId,
+            CancellationToken cancellationToken)
+        {
+            var song = await _songGetByIdService.ExecuteAsync(providerId, cancellationToken);
+
+            return Ok(song);
         }
 
         [HttpPost]

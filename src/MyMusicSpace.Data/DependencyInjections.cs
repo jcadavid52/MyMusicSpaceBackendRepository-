@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -94,6 +93,12 @@ namespace MyMusicSpace.Data
         private static void AddExternalServiceClients(IServiceCollection services)
         {
             services.AddHttpClient<IProviderMusicSearchService, SpotifySearchService>((sp, client) =>
+            {
+                var options = sp.GetRequiredService<IOptions<ProviderMusicOptions>>().Value;
+                client.BaseAddress = new Uri(options.Spotify.ApiUrl);
+            });
+
+            services.AddHttpClient<IProviderMusicGetByIdService, SpotifyGetByIdService>((sp, client) =>
             {
                 var options = sp.GetRequiredService<IOptions<ProviderMusicOptions>>().Value;
                 client.BaseAddress = new Uri(options.Spotify.ApiUrl);

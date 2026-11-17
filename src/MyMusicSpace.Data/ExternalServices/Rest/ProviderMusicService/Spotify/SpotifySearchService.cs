@@ -32,7 +32,7 @@ namespace MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Spotify
             ArgumentNullException.ThrowIfNull(query);
             ArgumentException.ThrowIfNullOrWhiteSpace(query.Search);
 
-            var limit = query.Limit <= 0 ? DefaultLimit : Math.Min(query.Limit, MaxLimit);
+            var limit = query.Limit <= 0 ? DefaultLimit : Math.Min(query.Limit ?? 10, MaxLimit);
             var requestUri = $"{SearchPath}?q={Uri.EscapeDataString(query.Search)}&type=track&limit={limit}";
 
             var accessToken = await _accessTokenService.ExecuteAsync(cancellationToken);
@@ -58,24 +58,10 @@ namespace MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Spotify
 
             var tracks = searchResponse.Tracks.Items
                 .Where(track => track is not null)
-                .Select(MapTrack)
+                .Select(SpotifyTrackMapper.ToProviderDto)
                 .ToArray();
 
             return new SongProviderSearchResponseDto(tracks, searchResponse.Tracks.Total);
         }
-
-        private static SongProviderSearchResultDto MapTrack(SpotifyTrackDto track) =>
-            new(
-                track.Id,
-                track.Name,
-                track.ExternalUrls.Spotify,
-                track.DurationMs,
-                new AlbumProviderSearchResultDto(
-                    track.Album.Id,
-                    track.Album.Name,
-                    track.Album.Images?.FirstOrDefault()?.Url),
-                track.Artists
-                    .Select(artist => new ArtistProviderSearchResultDto(artist.Id, artist.Name))
-                    .ToArray());
     }
 }

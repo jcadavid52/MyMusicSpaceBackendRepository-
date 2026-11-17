@@ -1,6 +1,6 @@
 namespace MyMusicSpace.Contracts.Dtos
 {
     public record SongProviderSearchResponseDto(
-        IReadOnlyList<SongProviderSearchResultDto> Tracks,
+        IReadOnlyList<SongProviderDto> Tracks,
         int Total);
 }

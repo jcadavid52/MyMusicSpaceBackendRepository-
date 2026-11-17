@@ -38,6 +38,11 @@ namespace MyMusicSpace.Api.ExceptionHandling
                         "Concurrent modification",
                         "Another request modified the same data. Try again."),
 
+                ProviderMusicSongNotFoundException
+                    => (StatusCodes.Status404NotFound,
+                        "Song not found",
+                        "The requested song was not found in the music provider."),
+
                 ProviderMusicAuthenticationException
                     => (StatusCodes.Status502BadGateway,
                         "Music provider authentication failed",
