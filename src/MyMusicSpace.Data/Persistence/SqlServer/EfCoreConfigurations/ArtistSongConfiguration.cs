@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using MyMusicSpace.Data.Models;
+using MyMusicSpace.Data.Persistence.Models;
 
 namespace MyMusicSpace.Data.Persistence.SqlServer.EfCoreConfigurations
 {

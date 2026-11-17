@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MyMusicSpace.Data.Models;
+using MyMusicSpace.Data.Persistence.Models;
 
 namespace MyMusicSpace.Data.Persistence.SqlServer
 {

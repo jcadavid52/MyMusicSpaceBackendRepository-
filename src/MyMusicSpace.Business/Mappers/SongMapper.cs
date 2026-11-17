@@ -1,5 +1,5 @@
 ﻿using MyMusicSpace.Business.Services.Dtos;
-using MyMusicSpace.Data.Models;
+using MyMusicSpace.Data.Persistence.Models;
 
 namespace MyMusicSpace.Business.Mappers
 {

@@ -1,8 +1,8 @@
-using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using MyMusicSpace.Data.Models;
+using MyMusicSpace.Data.Persistence.Models;
+using System.Text.Json;
 
 namespace MyMusicSpace.Data.Persistence.SqlServer.EfCoreConfigurations
 {

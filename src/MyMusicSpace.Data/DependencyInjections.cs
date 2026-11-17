@@ -1,11 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using MyMusicSpace.Contracts;
+using MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService;
+using MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Abstractions;
+using MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Spotify;
 using MyMusicSpace.Data.Persistence;
+using MyMusicSpace.Data.Persistence.Abstractions;
 using MyMusicSpace.Data.Persistence.SqlServer;
 using MyMusicSpace.Data.Persistence.SqlServer.HostedServices;
-using MyMusicSpace.Data.Persistence.UnitOfWork;
-using MyMusicSpace.Data.Repositories;
+using MyMusicSpace.Data.Persistence.SqlServer.Repositories;
 
 namespace MyMusicSpace.Data
 {
@@ -18,21 +23,35 @@ namespace MyMusicSpace.Data
             ArgumentNullException.ThrowIfNull(services);
             ArgumentNullException.ThrowIfNull(configuration);
 
-            AddDatabaseOptions(services, configuration);
+            AddOptions(services, configuration);
+            AddExternalServiceClients(services);
+            services.AddMemoryCache();
             AddSqlServerDatabase(services);
             AddRepositories(services);
             AddPersistenceHostedServices(services);
-            AddUnitOfWork(services);
 
             return services;
         }
 
-        private static void AddDatabaseOptions(
+        private static void AddOptions(
             IServiceCollection services,
             IConfiguration configuration)
         {
             services.AddOptions<DatabaseOptions>()
                 .Bind(configuration.GetSection(DatabaseOptions.SectionName))
+                .ValidateOnStart();
+
+            services.AddOptions<ProviderMusicOptions>()
+                .Bind(configuration.GetSection(ProviderMusicOptions.SectionName))
+                .Validate(
+                    options => !string.IsNullOrWhiteSpace(options.Spotify?.TokenUrl),
+                    $"{ProviderMusicOptions.SectionName}:Spotify:TokenUrl is required.")
+                .Validate(
+                    options => !string.IsNullOrWhiteSpace(options.Spotify?.ClientId),
+                    $"{ProviderMusicOptions.SectionName}:Spotify:ClientId is required.")
+                .Validate(
+                    options => !string.IsNullOrWhiteSpace(options.Spotify?.ClientSecret),
+                    $"{ProviderMusicOptions.SectionName}:Spotify:ClientSecret is required.")
                 .ValidateOnStart();
         }
 
@@ -56,6 +75,7 @@ namespace MyMusicSpace.Data
                     sqlServer.MigrationsAssembly(typeof(SpaceMusicSqlServerDbContext).Assembly.FullName);
                 });
             });
+            services.AddScoped<IUnitOfWork, SqlServerUnitOfWork>();
         }
 
         private static void AddRepositories(IServiceCollection services)
@@ -70,9 +90,25 @@ namespace MyMusicSpace.Data
             services.AddHostedService<AutomaticMigrationsHostedService>();
         }
 
-        private static void AddUnitOfWork(IServiceCollection services)
+        private static void AddExternalServiceClients(IServiceCollection services)
         {
-            services.AddScoped<IUnitOfWork, EfUnitOfWork>();
+            services.AddHttpClient<IProviderMusicSearchService, SpotifySearchService>((sp, client) =>
+            {
+                var options = sp.GetRequiredService<IOptions<ProviderMusicOptions>>().Value;
+                client.BaseAddress = new Uri(options.Spotify.ApiUrl);
+            });
+
+            services.AddHttpClient<IProviderMusicGetByIdService, SpotifyGetByIdService>((sp, client) =>
+            {
+                var options = sp.GetRequiredService<IOptions<ProviderMusicOptions>>().Value;
+                client.BaseAddress = new Uri(options.Spotify.ApiUrl);
+            });
+
+            services.AddHttpClient<IProviderMusicAccessTokenService, SpotifyAccessTokenService>((sp, client) =>
+            {
+                var options = sp.GetRequiredService<IOptions<ProviderMusicOptions>>().Value;
+                client.BaseAddress = new Uri(options.Spotify.TokenUrl);
+            });
         }
     }
 }
