@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using MyMusicSpace.Business.Services.Abstractions;
 using MyMusicSpace.Business.Services.Dtos;
+using MyMusicSpace.Contracts;
+using MyMusicSpace.Contracts.Dtos;
 
 namespace MyMusicSpace.Api.Controllers
 {

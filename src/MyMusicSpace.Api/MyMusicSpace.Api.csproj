@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MyMusicSpace.Business\MyMusicSpace.Business.csproj" />
-    <ProjectReference Include="..\MyMusicSpace.Data\MyMusicSpace.Data.csproj" />
+    <ProjectReference Include="..\MyMusicSpace.Contracts\MyMusicSpace.Contracts.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace MyMusicSpace.Business.Services.Dtos
+namespace MyMusicSpace.Contracts.Dtos
 {
     public record SongSearchQueryDto(
         [property: Required, StringLength(200, MinimumLength = 1)] string Search,

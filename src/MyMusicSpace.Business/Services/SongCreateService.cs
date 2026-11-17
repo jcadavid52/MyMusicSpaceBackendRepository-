@@ -3,7 +3,7 @@ using MyMusicSpace.Business.Exceptions;
 using MyMusicSpace.Business.Mappers;
 using MyMusicSpace.Business.Services.Abstractions;
 using MyMusicSpace.Business.Services.Dtos;
-using MyMusicSpace.Data.Exceptions;
+using MyMusicSpace.Contracts.Exceptions;
 using MyMusicSpace.Data.Persistence.Abstractions;
 using MyMusicSpace.Data.Persistence.Models;
 using MyMusicSpace.Data.Persistence.SqlServer.EfCoreConfigurations;

@@ -2,7 +2,11 @@
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
+using MyMusicSpace.Contracts;
 using MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService;
+using MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Abstractions;
+using MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Spotify;
 using MyMusicSpace.Data.Persistence;
 using MyMusicSpace.Data.Persistence.Abstractions;
 using MyMusicSpace.Data.Persistence.SqlServer;
@@ -21,6 +25,7 @@ namespace MyMusicSpace.Data
             ArgumentNullException.ThrowIfNull(configuration);
 
             AddOptions(services, configuration);
+            AddExternalServiceClients(services);
             services.AddMemoryCache();
             AddSqlServerDatabase(services);
             AddRepositories(services);
@@ -84,6 +89,21 @@ namespace MyMusicSpace.Data
         private static void AddPersistenceHostedServices(IServiceCollection services)
         {
             services.AddHostedService<AutomaticMigrationsHostedService>();
+        }
+
+        private static void AddExternalServiceClients(IServiceCollection services)
+        {
+            services.AddHttpClient<ISongSearchService, SpotifySearchService>((sp, client) =>
+            {
+                var options = sp.GetRequiredService<IOptions<ProviderMusicOptions>>().Value;
+                client.BaseAddress = new Uri(options.Spotify.ApiUrl);
+            });
+
+            services.AddHttpClient<IProviderMusicAccessTokenService, SpotifyAccessTokenService>((sp, client) =>
+            {
+                var options = sp.GetRequiredService<IOptions<ProviderMusicOptions>>().Value;
+                client.BaseAddress = new Uri(options.Spotify.TokenUrl);
+            });
         }
     }
 }

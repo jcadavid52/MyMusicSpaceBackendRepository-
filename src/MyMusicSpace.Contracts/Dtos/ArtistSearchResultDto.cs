@@ -1,4 +1,4 @@
-namespace MyMusicSpace.Business.Services.Dtos
+namespace MyMusicSpace.Contracts.Dtos
 {
     public record ArtistSearchResultDto(
         string ProviderId,

@@ -1,6 +1,6 @@
-using MyMusicSpace.Business.Services.Dtos;
+using MyMusicSpace.Contracts.Dtos;
 
-namespace MyMusicSpace.Business.Services.Abstractions
+namespace MyMusicSpace.Contracts
 {
     public interface ISongSearchService
     {

@@ -4,12 +4,12 @@ using System.Text;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Options;
 using MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Abstractions;
-using MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Exceptions;
+using MyMusicSpace.Contracts.Exceptions;
 using MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Spotify.Dtos;
 
 namespace MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Spotify
 {
-    public class SpotifyGetAccessTokenService : IProviderMusicGetAccessTokenService
+    public class SpotifyAccessTokenService : IProviderMusicAccessTokenService
     {
         private const string GrantType = "client_credentials";
         private const string AccessTokenCacheKey = "ProviderMusic:Spotify:AccessToken";
@@ -19,7 +19,7 @@ namespace MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Spotify
         private readonly HttpClient _httpClient;
         private readonly IMemoryCache _cache;
 
-        public SpotifyGetAccessTokenService(
+        public SpotifyAccessTokenService(
             IOptions<ProviderMusicOptions> options,
             HttpClient httpClient,
             IMemoryCache cache)

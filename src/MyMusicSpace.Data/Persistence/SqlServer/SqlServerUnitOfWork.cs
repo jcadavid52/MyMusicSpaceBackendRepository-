@@ -1,6 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using MyMusicSpace.Data.Exceptions;
+using MyMusicSpace.Contracts.Exceptions;
 using MyMusicSpace.Data.Persistence.Abstractions;
 using System.Text.RegularExpressions;
 

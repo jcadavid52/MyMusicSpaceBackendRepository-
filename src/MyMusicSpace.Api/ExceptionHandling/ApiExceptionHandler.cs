@@ -1,8 +1,7 @@
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using MyMusicSpace.Business.Exceptions;
-using MyMusicSpace.Data.Exceptions;
-using MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Exceptions;
+using MyMusicSpace.Contracts.Exceptions;
 
 namespace MyMusicSpace.Api.ExceptionHandling
 {

@@ -1,31 +1,32 @@
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using MyMusicSpace.Contracts;
+using MyMusicSpace.Contracts.Dtos;
+using MyMusicSpace.Contracts.Exceptions;
 using MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Abstractions;
-using MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Dtos;
-using MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Exceptions;
 using MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Spotify.Dtos;
 
 namespace MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Spotify
 {
-    public class SpotifySearchService : IProviderMusicSearchService
+    public class SpotifySearchService : ISongSearchService
     {
         private const string SearchPath = "v1/search";
-        private const int DefaultLimit = 10;
+        private const int DefaultLimit = 20;
         private const int MaxLimit = 50;
 
-        private readonly IProviderMusicGetAccessTokenService _accessTokenService;
+        private readonly IProviderMusicAccessTokenService _accessTokenService;
         private readonly HttpClient _httpClient;
 
         public SpotifySearchService(
-            IProviderMusicGetAccessTokenService accessTokenService,
+            IProviderMusicAccessTokenService accessTokenService,
             HttpClient httpClient)
         {
             _accessTokenService = accessTokenService;
             _httpClient = httpClient;
         }
 
-        public async Task<ProviderMusicSearchResponseDto> ExecuteAsync(
-            ProviderMusicSearchQueryDto query,
+        public async Task<SongSearchResponseDto> ExecuteAsync(
+            SongSearchQueryDto query,
             CancellationToken cancellationToken = default)
         {
             ArgumentNullException.ThrowIfNull(query);
@@ -60,21 +61,21 @@ namespace MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Spotify
                 .Select(MapTrack)
                 .ToArray();
 
-            return new ProviderMusicSearchResponseDto(tracks, searchResponse.Tracks.Total);
+            return new SongSearchResponseDto(tracks, searchResponse.Tracks.Total);
         }
 
-        private static ProviderMusicTrackDto MapTrack(SpotifyTrackDto track) =>
+        private static SongSearchResultDto MapTrack(SpotifyTrackDto track) =>
             new(
                 track.Id,
                 track.Name,
                 track.ExternalUrls.Spotify,
                 track.DurationMs,
-                new ProviderMusicAlbumDto(
+                new AlbumSearchResultDto(
                     track.Album.Id,
                     track.Album.Name,
                     track.Album.Images?.FirstOrDefault()?.Url),
                 track.Artists
-                    .Select(artist => new ProviderMusicArtistDto(artist.Id, artist.Name))
+                    .Select(artist => new ArtistSearchResultDto(artist.Id, artist.Name))
                     .ToArray());
     }
 }

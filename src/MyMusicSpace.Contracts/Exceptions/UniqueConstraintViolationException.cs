@@ -1,4 +1,4 @@
-﻿namespace MyMusicSpace.Data.Exceptions
+namespace MyMusicSpace.Contracts.Exceptions
 {
     public sealed class UniqueConstraintViolationException : Exception
     {

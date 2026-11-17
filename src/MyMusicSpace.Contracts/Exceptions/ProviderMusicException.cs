@@ -1,4 +1,4 @@
-namespace MyMusicSpace.Data.ExternalServices.Rest.ProviderMusicService.Exceptions
+namespace MyMusicSpace.Contracts.Exceptions
 {
     public class ProviderMusicException : Exception
     {
